@@ -1,6 +1,14 @@
+const response = require('../helpers/standardResponse');
+const transactionModel = require('../models/transactions');
+
 exports.getAllTransactions = (req, res) => {
-    return res.json({
-        success: true,
-        message: 'List All Transactions'
-    });
+  transactionModel.getAllTransactions((results) => {
+    return response(res, 'Message from standard response', results);
+  });
+};
+
+exports.createTransactions = (req, res) => {
+  transactionModel.createTransactions(req.body, (results) => {
+    return response(res, 'Create transaction successfully', results[0]);
+  });
 };
