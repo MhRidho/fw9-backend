@@ -12,3 +12,17 @@ exports.createTransactions = (req, res) => {
     return response(res, 'Create transaction successfully', results[0]);
   });
 };
+
+exports.editTransactions = (req, res) => {
+  const { id } = req.params;
+  transactionModel.updateTransactions(id, req.body, (results) => {
+    return response(res, 'Updata data transaksi sukses', results[0]);
+  });
+};
+
+exports.deleteTransactions = (req, res) => {
+  const { id } = req.params;
+  transactionModel.deleteTransactions(id, (results) => {
+    return response(res, 'Transaction deleted!', results[0]);
+  });
+};

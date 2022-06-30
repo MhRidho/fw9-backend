@@ -13,3 +13,19 @@ exports.createTransactions = (data, cb) => {
     cb(res.rows);
   });
 };
+
+exports.updateTransactions = (id, data, cb) => {
+  const q = 'UPDATE transaction SET amount=$1, recipient_id=$2, sender_id=$3, notes=$4, time=$5, type_id=$6 WHERE id=$7 RETURNING *';
+  const val = [data.amount, data.recipient_id, data.sender_id, data.notes, data.time, data.type_id, id];
+  db.query(q, val, (err, res) => {
+    cb(res.rows);
+  });
+};
+
+exports.deleteTransactions = (id, cb) => {
+  const q = 'DELETE FROM transaction WHERE id=$1 RETURNING *';
+  const val = [id];
+  db.query(q, val, (err, res) => {
+    cb(res.rows);
+  });
+};

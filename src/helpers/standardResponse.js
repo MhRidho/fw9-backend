@@ -13,10 +13,7 @@ const response = (res, msg, results, status = 200) => {
     data.results = results;
   }
 
-  return res.status(status, results).send({
-    success: true,
-    results: results
-  });
+  return res.status(status).json(data);
 };
 
 module.exports = response;
