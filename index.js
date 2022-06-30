@@ -13,22 +13,6 @@ app.get('/', (req, res) => {
 
 app.use('/', require('./src/routes'));
 
-// app.post('/login', (req, res) => {
-//     console.log(req.query);
-//     if (req.body.email === 'ridho@gmail.com' && req.body.password === '1234') {
-//         return res.json({
-//             success: true,
-//             message: 'Login success'
-//         });
-//     } else {
-//         return res.json({
-//             success: false,
-//             message: 'Login failed'
-//         });
-//     }
-
-// });
-
 app.use('*', (req, res) => {
   return res.status(404).json({
     success: false,
