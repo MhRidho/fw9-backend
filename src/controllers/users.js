@@ -1,5 +1,6 @@
 const response = require('../helpers/standardResponse');
 const userModel = require('../models/users');
+// const bcrypt = require('bcrypt');
 
 
 exports.getAllUsers = (req, res) => {
@@ -27,14 +28,7 @@ exports.createUser =
     }
     userModel.createUser(req.body, (err, results) => {
       if (err) {
-        if (err.code === '23505' && err.detail.includes('email')) {
-          const eres = errorResponse('Email already exist', 'email');
-          return response(res, 'Error', eres, 400);
-        } else if (err.code === '23505' && err.detail.includes('username')) {
-          const eres = errorResponse('Email already exist', 'username');
-          return response(res, 'Error', eres, 400);
-        }
-        return response(res, 'Error', null, 400);
+        return errorResponse(err, res);
       } else {
         return response(res, 'Create user successfully', results[0]);
       }
