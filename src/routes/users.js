@@ -18,7 +18,8 @@ const createUserValidator = [
     })
 ];
 
-users.get('/', userController.getAllUsers);
+users.get('/', body('limit').toInt(), body('page').toInt(), userController.getAllUsers);
+users.get('/:id', userController.getUserById);
 users.post('/', ...createUserValidator, userController.createUser);
 users.patch('/:id', userController.editUser);
 users.delete('/:id', userController.deleteUser);
