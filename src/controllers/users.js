@@ -6,17 +6,17 @@ const errorResponse = require('../helpers/errorResponse');
 const { LIMIT_DATA } = process.env;
 
 exports.getAllUsers = (req, res) => {
-  const { q = '', limit = parseInt(LIMIT_DATA), page = 1 } = req.query;
-
+  const { search = '', limit = parseInt(LIMIT_DATA), page = 1, sortType = 'ASC' } = req.query;
+  const sortBy = 'email';
   const offset = (page - 1) * limit;
 
-  userModel.getAllUsers(q, limit, offset, (err, results) => {
+  userModel.getAllUsers(search, sortBy, sortType, limit, offset, (err, results) => {
     if (results.length < 1) {
       return res.redirect('/404');
     }
     const pageInfo = {};
 
-    userModel.countAllUsers(q, (err, totalData) => {
+    userModel.countAllUsers(search, (err, totalData) => {
       pageInfo.totalData = totalData;
       pageInfo.totalPage = Math.ceil(totalData / limit);
       pageInfo.currentPage = parseInt(page);

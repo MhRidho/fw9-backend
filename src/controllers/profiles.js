@@ -1,15 +1,33 @@
 const response = require('../helpers/standardResponse');
 const profileModel = require('../models/profiles');
+const { validationResult } = require('express-validator');
+const errorResponse = require('../helpers/errorResponse');
+const upload = require('../helpers/upload').single('picture');
+const { LIMIT_DATA } = process.env;
 
 exports.getAllProfiles = (req, res) => {
-  profileModel.getAllProfiles((results) => {
-    return response(res, 'Message Get All Profiles', results);
+  const { search = '', limit = parseInt(LIMIT_DATA), page = 1 } = req.query;
+  const offset = (page - 1) * limit;
+
+  profileModel.getAllProfiles(search, limit, offset, (err, results) => {
+    if (results.length < 1) {
+      return res.redirect('/404');
+    }
+    const pageInfo = {};
+
+    profileModel.countAllProfiles(search, (err, totalData) => {
+      pageInfo.totalData = totalData;
+      pageInfo.totalPage = Math.ceil(totalData / limit);
+      pageInfo.currentPage = parseInt(page);
+      pageInfo.nextPage = pageInfo.currentPage < pageInfo.totalPage ? pageInfo.currentPage + 1 : null;
+      pageInfo.prevPage = pageInfo.currentPage > 1 ? pageInfo.currentPage - 1 : null;
+      console.log(totalData);
+      return response(res, 'List All Profiles', results, pageInfo);
+    });
   });
 };
 
-// Syntax untuk validasi create Profiles
-const { validationResult } = require('express-validator');
-const errorResponse = require('../helpers/errorResponse');
+// Syntax untuk create Profiles dan validasi
 exports.createProfiles = (req, res) => {
   const validation = validationResult(req);
   if (!validation.isEmpty()) {
@@ -29,10 +47,27 @@ exports.createProfiles = (req, res) => {
   });
 };
 
+exports.getProfileById = (req, res) => {
+  const { id } = req.params;
+  profileModel.getProfileById(id, (err, results) => {
+    if (results.rows.length > 0) {
+      return response(res, 'Detail Profiles', results.rows[0]);
+    } else {
+      return res.redirect('/404');
+    }
+  });
+};
+
 exports.editProfiles = (req, res) => {
   const { id } = req.params;
-  profileModel.updateProfiles(id, req.body, (results) => {
-    return response(res, 'Profiles edit success', results[0]);
+  upload(req, res, (err) => {
+    console.log(err);
+    if (err) {
+      return response(res, `Failed to update: ${err.message}`, null, null, 400);
+    }
+    profileModel.updateProfiles(id, req.file.filename, req.body, (err, results) => {
+      return response(res, 'Profiles edit success', results.rows[0]);
+    });
   });
 };
 
