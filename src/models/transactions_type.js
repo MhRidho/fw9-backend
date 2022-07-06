@@ -6,6 +6,12 @@ exports.getAllTrans_type = (cb) => {
   });
 };
 
+exports.getTrans_typeById = (id, cb) => {
+  db.query('SELECT * FROM transaction_type WHERE id=$1', [id], (err, res) => {
+    cb(err, res);
+  });
+};
+
 exports.createTrans_type = (data, cb) => {
   const val = [data.name, data.description];
   db.query('INSERT INTO transaction_type(name, description) VALUES ($1, $2) RETURNING *', val, (err, res) => {

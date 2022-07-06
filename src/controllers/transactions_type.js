@@ -7,6 +7,17 @@ exports.getAllTrans_type = (req, res) => {
   });
 };
 
+exports.getTrans_typeById = (req, res) => {
+  const { id } = req.params;
+  transModel.getTrans_typeById(id, (err, results) => {
+    if (results.rows.length > 0) {
+      return response(res, 'Detail transaction_type', results.rows[0]);
+    } else {
+      return res.redirect('/404');
+    }
+  });
+};
+
 exports.createTrans_type = (req, res) => {
   transModel.createTrans_type(req.body, (results) => {
     return response(res, 'Create Transaction type successfully', results[0]);

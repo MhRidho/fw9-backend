@@ -7,6 +7,17 @@ exports.getAllTransactions = (req, res) => {
   });
 };
 
+exports.getTransactionById = (req, res) => {
+  const { id } = req.params;
+  transactionModel.getTransactionById(id, (err, results) => {
+    if (results.rows.length > 0) {
+      return response(res, 'Detail transactions', results.rows[0]);
+    } else {
+      return res.redirect('/404');
+    }
+  });
+};
+
 exports.createTransactions = (req, res) => {
   transactionModel.createTransactions(req.body, (results) => {
     return response(res, 'Create transaction successfully', results[0]);
