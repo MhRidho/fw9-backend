@@ -1,9 +1,24 @@
 const response = require('../helpers/standardResponse');
 const transModel = require('../models/transactions_type');
+const { LIMIT_DATA } = process.env;
 
 exports.getAllTrans_type = (req, res) => {
-  transModel.getAllTrans_type((results) => {
-    return response(res, 'Message from standar response', results);
+  const { search = '', limit = parseInt(LIMIT_DATA), page = 1, sortType = 'ASC' } = req.query;
+  const offset = (page - 1) * limit;
+
+  transModel.getAllTrans_type(search, sortType, limit, offset, (err, results) => {
+    if (results.length < 1) {
+      return res.redirect('/404');
+    }
+    const pageInfo = {};
+    transModel.countAllTrans_type(search, (err, totalData) => {
+      pageInfo.totalData = totalData;
+      pageInfo.totalPage = Math.ceil(totalData / limit);
+      pageInfo.currentPage = parseInt(page);
+      pageInfo.nextPage = pageInfo.currentPage < pageInfo.totalPage ? pageInfo.currentPage + 1 : null;
+      pageInfo.prevPage = pageInfo.currentPage > 1 ? pageInfo.currentPage - 1 : null;
+      return response(res, 'List All Transaction Type', results, pageInfo);
+    });
   });
 };
 

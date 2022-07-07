@@ -34,10 +34,27 @@ exports.createProfiles = (data, cb) => {
 };
 
 exports.updateProfiles = (id, picture, data, cb) => {
-  const q = 'UPDATE profile SET fullname=$1, phonenumber=$2, balance=$3, picture=$4, user_id=$5 WHERE id=$6 RETURNING *';
-  const val = [data.fullname, data.phonenumber, data.balance, picture, data.user_id, id];
+  // Untuk filter tanpa upload file 
+  let val = [id];
+  const filtered = {};
+  const obj = {
+    picture,
+    fullname: data.fullname,
+    balance: data.balance,
+    phoneNumber: data.phonenumber
+  };
+  for (let x in obj) {
+    if (obj[x] !== null) {
+      filtered[x] = obj[x];
+      val.push(obj[x]);
+    }
+  }
+  const key = Object.keys(filtered);
+  const finalResult = key.map((el, index) => `${el}=$${index + 2}`);
+  // close tanpa upload file
+
+  const q = `UPDATE profile SET ${finalResult} WHERE id=$1 RETURNING *`;
   db.query(q, val, (err, res) => {
-    console.log(err);
     cb(err, res);
   });
 };

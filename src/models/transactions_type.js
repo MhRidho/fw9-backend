@@ -1,8 +1,16 @@
 const db = require('../helpers/db');
+const { LIMIT_DATA } = process.env;
 
-exports.getAllTrans_type = (cb) => {
-  db.query('SELECT * FROM transaction_type', (err, res) => {
-    cb(res.rows);
+exports.getAllTrans_type = (keyword, sortType, limit = parseInt(LIMIT_DATA), offset = 0, cb) => {
+  const q = `SELECT * FROM transaction_type WHERE name LIKE '%${keyword}%' ORDER BY id ${sortType} LIMIT $1 OFFSET $2`;
+  db.query(q, [limit, offset], (err, res) => {
+    cb(err, res.rows);
+  });
+};
+
+exports.countAllTrans_type = (keyword, cb) => {
+  db.query(`SELECT * FROM transaction_type WHERE name LIKE '%${keyword}%'`, (err, res) => {
+    cb(err, res.rowCount);
   });
 };
 

@@ -2,7 +2,6 @@ const response = require('../helpers/standardResponse');
 const profileModel = require('../models/profiles');
 const { validationResult } = require('express-validator');
 const errorResponse = require('../helpers/errorResponse');
-const upload = require('../helpers/upload').single('picture');
 const { LIMIT_DATA } = process.env;
 
 exports.getAllProfiles = (req, res) => {
@@ -60,14 +59,21 @@ exports.getProfileById = (req, res) => {
 
 exports.editProfiles = (req, res) => {
   const { id } = req.params;
-  upload(req, res, (err) => {
-    console.log(err);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return response(res, 'Validation Error', errors.array(), null, 400);
+  }
+
+  let filename = null;
+
+  if (req.file) {
+    filename = req.file.filename;
+  }
+  profileModel.updateProfiles(id, filename, req.body, (err, results) => {
     if (err) {
       return response(res, `Failed to update: ${err.message}`, null, null, 400);
     }
-    profileModel.updateProfiles(id, req.file.filename, req.body, (err, results) => {
-      return response(res, 'Profiles edit success', results.rows[0]);
-    });
+    return response(res, 'Profiles edit success', results.rows[0]);
   });
 };
 

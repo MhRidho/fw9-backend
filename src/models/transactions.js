@@ -1,8 +1,16 @@
 const db = require('../helpers/db');
+const { LIMIT_DATA } = process.env;
 
-exports.getAllTransactions = (cb) => {
-  db.query('SELECT * FROM transaction', (err, res) => {
-    cb(res.rows);
+exports.getAllTransactions = (keyword, sortType, limit = parseInt(LIMIT_DATA), offset = 0, cb) => {
+  const q = `SELECT * FROM transaction WHERE notes LIKE '%${keyword}%' ORDER BY id ${sortType} LIMIT $1 OFFSET $2`;
+  db.query(q, [limit, offset], (err, res) => {
+    cb(err, res.rows);
+  });
+};
+
+exports.countAllTransactions = (keyword, cb) => {
+  db.query(`SELECT FROM transaction WHERE notes LIKE '%${keyword}%'`, (err, res) => {
+    cb(err, res.rowCount);
   });
 };
 
