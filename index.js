@@ -15,6 +15,17 @@ app.get('/', (req, res) => {
   });
 });
 
+// Untuk otentikasi user
+// app.get('/authenticatedUser', authMiddleware, (req, res) => {
+//   const userModel = require('./src/models/users');
+//   userModel.getUserById(req.authUser.id, (err, results) => {
+//     const user = results.rows[0];
+//     return res.json({
+//       message: 'Hello' + user.email
+//     });
+//   });
+// });
+
 
 // Untuk mengarahkan ke halaman Routes
 app.use('/', require('./src/routes'));
