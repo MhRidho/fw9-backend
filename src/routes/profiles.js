@@ -5,7 +5,7 @@ const uploadProfile = require('../middleware/uploadProfile');
 
 const createProfileValidator = [
   body('phonenumber')
-    .isMobilePhone().withMessage('Phone number must be true,don\'t use alphabet'),
+    .isMobilePhone('id-ID').withMessage('Phone number must be true, don\'t use alphabet'),
   body('fullname').trim()
 ];
 

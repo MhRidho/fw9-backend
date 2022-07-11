@@ -62,7 +62,7 @@ exports.updateUser = (id, data, cb) => {
   const finalResult = key.map((el, index) => `${el}=$${index + 2}`);
   const q = `UPDATE users SET ${finalResult} WHERE id=$1 RETURNING *`;
   db.query(q, val, (err, res) => {
-    cb(res.rows);
+    cb(err, res);
   });
 };
 

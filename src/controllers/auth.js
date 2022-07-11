@@ -21,6 +21,7 @@ exports.createPin = (req, res) => {
       const user = results.rows[0];
       if (user.pin === null) {
         userModel.updateUser(user.id, { pin: req.body.pin }, (err, resultUpdate) => {
+          console.log(err);
           const userUpdated = resultUpdate.rows[0];
           if (userUpdated.email === user.email) {
             return response(res, 'Create pin succes');
@@ -37,7 +38,7 @@ exports.createPin = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  const { email, password } = email.body;
+  const { email, password } = req.body;
   userModel.getUserByEmail(email, (err, results) => {
     if (results.rows.length < 1) {
       return response(res, 'User not found', null, null, 400);
@@ -47,11 +48,11 @@ exports.login = (req, res) => {
       .then((cpRes) => {
         if (cpRes) {
           const token = jwt.sign({ id: user.id }, process.env.APP_SECRET || 'secretKey');
-          return response(res, 'Login success', { token });
+          return response(res, 'Login success', { token }, results.rows);
         }
         return response(res, 'Email or Password not match', null, null, 400);
       })
-      .catch(e => {
+      .catch(res => {
         return response(res, 'Email or Password not match', null, null, 404);
       });
   });
