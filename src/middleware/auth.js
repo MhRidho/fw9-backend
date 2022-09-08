@@ -11,6 +11,7 @@ const auth = (req, res, next) => {
       try {
         const results = jwt.verify(token, process.env.APP_SECRET || 'secretKey');
         req.authUser = results;
+        console.log(req.authUser);
         next();
       } catch (e) {
         return response(res, 'Token expired', null, null, 401);

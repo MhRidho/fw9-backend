@@ -46,6 +46,35 @@ exports.createProfiles = (req, res) => {
   });
 };
 
+// create profile upload
+exports.createProfileUpload = (req, res) => {
+  const validation = validationResult(req);
+  if (!validation.isEmpty()) {
+    return response(res, 'error occured', validation.array(), 400);
+  }
+
+  let filename = null;
+
+  if (req.file) {
+    filename = req.file.filename;
+  }
+
+  profileModel.createProfileUpload(filename, req.body, (err, results) => {
+    console.log(err);
+    if (err) {
+      if (err.code === '23505' && err.detail.includes('phonenumber')) {
+        const eres = errorResponse('Phone number already exist', 'phonenumber');
+        return response(res, 'Error', eres, 400);
+      }
+      return response(res, 'Error', null, 400);
+    }
+    else {
+      return response(res, 'Create Profile success', results[0]);
+    }
+  });
+};
+
+
 exports.getProfileById = (req, res) => {
   const { id } = req.params;
   profileModel.getProfileById(id, (err, results) => {
@@ -73,6 +102,8 @@ exports.editProfiles = (req, res) => {
     if (err) {
       return response(res, `Failed to update: ${err.message}`, null, null, 400);
     }
+    console.log(req.body);
+    console.log(results);
     return response(res, 'Profiles edit success', results.rows[0]);
   });
 };

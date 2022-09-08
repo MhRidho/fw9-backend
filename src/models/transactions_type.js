@@ -42,3 +42,17 @@ exports.deleteTrans_type = (id, cb) => {
     cb(res.rows);
   });
 };
+
+// example
+exports.searchSortTransType = (searchBy, keyword, sort_by, sort_type, limit = parseInt(LIMIT_DATA), offset = 0, cb) => {
+  db.query(`SELECT * FROM transaction_type WHERE ${searchBy} LIKE '%${keyword}%' ORDER BY ${sort_by} ${sort_type} LIMIT $1 OFFSET $2`, [limit, offset], (err, res) => {
+    cb(res.rows);
+  });
+};
+
+exports.countAllTransType = (keyword, cb) => {
+  db.query(`SELECT * FROM transaction_type WHERE name LIKE '%${keyword}%'`, (err, res) => {
+    cb(err, res.rowCount);
+  });
+};
+// end example

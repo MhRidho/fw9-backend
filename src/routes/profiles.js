@@ -4,8 +4,8 @@ const { body } = require('express-validator');
 const uploadProfile = require('../middleware/uploadProfile');
 
 const createProfileValidator = [
-  body('phonenumber')
-    .isMobilePhone('id-ID').withMessage('Phone number must be true, don\'t use alphabet'),
+  // body('phonenumber')
+  //   .isMobilePhone().withMessage('Phone number must be true, don\'t use alphabet'),
   body('fullname').trim()
 ];
 
@@ -16,7 +16,8 @@ const authMiddleware = require('../middleware/auth');
 
 profiles.get('/', body('limit').toInt(), body('page').toInt(), profileController.getAllProfiles);
 profiles.get('/:id', profileController.getProfileById);
-profiles.post('/', ...createProfileValidator, profileController.createProfiles);
+profiles.post('/', uploadProfile, ...createProfileValidator, profileController.createProfiles);
+profiles.post('/profileUpload', profileController.createProfileUpload);
 profiles.patch('/:id', authMiddleware, uploadProfile, ...updateProfileRules, validation, profileController.editProfiles);
 profiles.delete('/:id', profileController.deleteProfiles);
 

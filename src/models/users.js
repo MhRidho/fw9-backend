@@ -58,6 +58,7 @@ exports.updateUser = (id, data, cb) => {
       }
     }
   }
+  console.log(obj);
   const key = Object.keys(filtered);
   const finalResult = key.map((el, index) => `${el}=$${index + 2}`);
   const q = `UPDATE users SET ${finalResult} WHERE id=$1 RETURNING *`;

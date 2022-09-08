@@ -22,8 +22,22 @@ exports.getProfileById = (id, cb) => {
 };
 
 exports.createProfiles = (data, cb) => {
+  console.log(data.fullname);
   const q = 'INSERT INTO profile(fullname, phonenumber, balance, picture, user_id) VALUES($1, $2, $3, $4, $5) RETURNING *';
   const val = [data.fullname, data.phonenumber, data.balance, data.picture, data.user_id];
+  db.query(q, val, (err, res) => {
+    if (res) {
+      cb(err, res.rows);
+    } else {
+      cb(err);
+    }
+  });
+};
+
+// create model profile upload
+exports.createProfileUpload = (picture, data, cb) => {
+  const q = 'INSERT INTO profile(fullname, phonenumber, balance, picture, user_id) VALUES($1, $2, $3, $4, $5) RETURNING *';
+  const val = [data.fullname, data.phonenumber, data.balance, picture, data.user_id];
   db.query(q, val, (err, res) => {
     if (res) {
       cb(err, res.rows);
@@ -64,5 +78,25 @@ exports.deleteProfiles = (id, cb) => {
   const val = [id];
   db.query(q, val, (err, res) => {
     cb(res.rows);
+  });
+};
+
+exports.getProfileByUserIdAuth = (user_id, cb) => {
+  const q = 'SELECT * FROM profile WHERE user_id=$1';
+  const val = [user_id];
+  db.query(q, val, (err, res) => {
+    cb(err, res);
+  });
+};
+
+exports.getProfileByUserIdTransfer = (user_id, cb) => {
+  const q = 'SELECT * FROM profile WHERE user_id=$1';
+  const val = [user_id];
+  db.query(q, val, (err, res) => {
+    if (res) {
+      cb(err, res);
+    } else {
+      cb(err);
+    }
   });
 };

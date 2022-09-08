@@ -34,7 +34,7 @@ exports.getTransactionById = (req, res) => {
 };
 
 exports.createTransactions = (req, res) => {
-  transactionModel.createTransactions(req.body, (results) => {
+  transactionModel.createTransactions(req.body, (err, results) => {
     return response(res, 'Create transaction successfully', results[0]);
   });
 };

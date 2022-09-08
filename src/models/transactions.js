@@ -20,6 +20,39 @@ exports.getTransactionById = (id, cb) => {
   });
 };
 
+// example
+exports.searchSortTrans = (searchBy, keyword, sort_by, sort_type, limit = parseInt(LIMIT_DATA), offset = 0, cb) => {
+  db.query(`SELECT * FROM transactions WHERE ${searchBy} LIKE '%${keyword}%' ORDER BY ${sort_by} ${sort_type} LIMIT $1 OFFSET $2`, [limit, offset], (err, res) => {
+    console.log(res);
+    cb(res.rows);
+  });
+};
+
+exports.countAllTrans = (keyword, cb) => {
+  db.query(`SELECT * FROM transactions WHERE note LIKE '%${keyword}%'`, (err, res) => {
+    cb(err, res.rowCount);
+  });
+};
+
+exports.countAllTranswithAuth = (search, cb) => {
+  db.query(`SELECT * FROM transactions WHERE recipient_id LIKE '%${search}%'`, (err, res) => {
+    cb(err, res.rowCount);
+  });
+};
+
+exports.createTransactionwithAuth = (sender_id, data, cb) => {
+  const q = 'INSERT INTO transactions(amount, recipient_id, sender_id, note, time, type_id_trans) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+  const val = [data.amount, data.recipient_id, sender_id, data.note, data.time, data.type_id_trans];
+  db.query(q, val, (err, res) => {
+    if (res) {
+      cb(err, res);
+    } else {
+      cb(err);
+    }
+  });
+};
+// end example
+
 exports.createTransactions = (data, cb) => {
   const q = 'INSERT INTO transaction(amount, recipient_id, sender_id, notes, time, type_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
   const val = [data.amount, data.recipient_id, data.sender_id, data.notes, data.time, data.type_id];
@@ -29,7 +62,6 @@ exports.createTransactions = (data, cb) => {
     } else {
       cb(err, res.rows);
     }
-
   });
 };
 

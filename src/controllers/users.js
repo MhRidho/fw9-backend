@@ -64,8 +64,9 @@ exports.getUserById = (req, res) => {
 
 exports.editUser = (req, res) => {
   const { id } = req.params;
-  userModel.updateUser(id, req.body, (results) => {
-    return response(res, 'Update data sukses!', results[0]);
+  userModel.updateUser(id, req.body, (err, results) => {
+    console.log(results);
+    return response(res, 'Update data succsess!', results.rows[0]);
   });
 };
 

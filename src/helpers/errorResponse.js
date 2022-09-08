@@ -20,7 +20,7 @@ const errorResponse = (err, res) => {
     const eres = errorHandling('Amount cannot be null', 'amount');
     return response(res, 'Error', eres, null, 400);
   }
-  return response(res, 'Error', null, null, 400);
+  return response(res, 'Error Data', null, null, 400);
 };
 
 module.exports = errorResponse;
