@@ -3,7 +3,6 @@ const db = require('../helpers/db');
 const { LIMIT_DATA } = process.env;
 
 exports.getAllUsers = (keyword, sortBy, sortType, limit = parseInt(LIMIT_DATA), offset = 0, cb) => {
-
   const q = `SELECT * FROM users WHERE ${sortBy} LIKE '%${keyword}%' ORDER BY id ${sortType} LIMIT $1 OFFSET $2`;
   db.query(q, [limit, offset], (err, res) => {
     console.log(err);

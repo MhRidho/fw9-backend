@@ -3,7 +3,7 @@ const transactionModel = require('../models/transactions');
 const { LIMIT_DATA } = process.env;
 
 exports.getAllTransactions = (req, res) => {
-  const { search = '', limit = parseInt(LIMIT_DATA), page = 1, sortType = 'ASC' } = req.query;
+  const { search = '', limit = parseInt(LIMIT_DATA), page = 1, sortType = 'DESC' } = req.query;
   const offset = (page - 1) * limit;
 
   transactionModel.getAllTransactions(search, sortType, limit, offset, (err, results) => {
