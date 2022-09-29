@@ -22,6 +22,7 @@ exports.getAllUsers = (req, res) => {
       pageInfo.currentPage = parseInt(page);
       pageInfo.nextPage = pageInfo.currentPage < pageInfo.totalPage ? pageInfo.currentPage + 1 : null;
       pageInfo.prevPage = pageInfo.currentPage > 1 ? pageInfo.currentPage - 1 : null;
+      pageInfo.limit = limit;
       return response(res, 'List All Users', results, pageInfo);
     });
   });
