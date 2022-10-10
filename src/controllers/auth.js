@@ -41,6 +41,7 @@ exports.createPin = (req, res) => {
 exports.login = (req, res) => {
   const { email, password } = req.body;
   userModel.getUserByEmail(email, (err, results) => {
+    console.log(results);
     if (results.rows.length < 1) {
       return response(res, 'User not found', null, null, 400);
     }

@@ -131,6 +131,7 @@ exports.editProfile = (req, res) => {
   }
   authModel.editProfile(id, filename, req.body, (err, results) => {
     if (err) {
+      console.log(err);
       return response(res, `Failed to update: ${err.message}`, null, null, 400);
     }
     return response(res, 'Profile edit success', results.rows[0]);
