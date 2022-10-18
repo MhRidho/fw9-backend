@@ -102,8 +102,6 @@ exports.editProfiles = (req, res) => {
     if (err) {
       return response(res, `Failed to update: ${err.message}`, null, null, 400);
     }
-    console.log(req.body);
-    console.log(results);
     return response(res, 'Profiles edit success', results.rows[0]);
   });
 };
