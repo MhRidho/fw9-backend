@@ -89,18 +89,19 @@ exports.createTransfer = (req, res) => {
 
 exports.createTopup = (req, res) => {
   const recipient_id = req.authUser.id;
-  const { amount, type_id } = req.body;
+  const { amount, type_id = 1, notes = 'Topup' } = req.body;
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  const time = mm + '-' + dd + '-' + yyyy;
   profileModel.getProfileByUserIdTransfer(recipient_id, (err, results1) => {
-    console.log(results1.rows);
     if (results1.rows.length > 0) {
       const profile = results1.rows[0];
-      authModel.createTopup(amount, recipient_id, type_id, req.body, (err, results) => {
+      authModel.createTopup(amount, recipient_id, type_id, notes, time, (err, results) => {
         if (err) {
-          console.log(err);
           return errorResponse(err, res);
         } else {
-          console.log(profile.balance);
-          console.log(results.rows[0].amount);
           return response(res, `Top Up is Successfully, balance left: Rp.${Number(profile.balance) + Number(results.rows[0].amount)}`, results.rows[0]);
         }
       });

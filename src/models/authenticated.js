@@ -41,13 +41,13 @@ exports.createTransfer = (sender_id, amount, data, cb) => {
   });
 };
 
-exports.createTopup = (amount, recipient_id, type_id, data, cb) => {
+exports.createTopup = (amount, recipient_id, type_id, notes, time, cb) => {
   db.query('BEGIN', err => {
     if (err) {
       cb(err);
     } else {
       const qTrans = 'INSERT INTO transaction(amount, recipient_id, notes, time, type_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-      const val = [amount, recipient_id, data.notes, data.time, type_id];
+      const val = [amount, recipient_id, notes, time, type_id];
       db.query(qTrans, val, (err, res) => {
         if (err) {
           cb(err);
